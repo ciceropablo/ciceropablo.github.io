@@ -1,0 +1,96 @@
+/* ─── Design tokens ─────────────────────────────────────────────────────────
+   Golden ratio φ ≈ 1.618 drives both the type scale and spacing scale.
+   All theme-sensitive values live here as CSS custom properties so that
+   switching [data-theme] is the only mechanism needed to change the look.
+──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Light theme (default) */
+  --bg:           #f5f4f0;
+  --text:         #1c1c1a;
+  --text-muted:   #5e5e5a;
+  --wave-color:   rgba(28, 28, 26, 0.14); /* adjust independently of --border */
+  --border:       rgba(28, 28, 26, 0.14);
+  --link:         #1c1c1a;
+  --link-hover:   #4a4a46;
+  --focus-ring:   #1c1c1a;
+  --btn-bg:       transparent;
+  --btn-text:     #5e5e5a;
+  --btn-border:   rgba(28, 28, 26, 0.22);
+  --btn-hover-bg: rgba(28, 28, 26, 0.06);
+
+  /* Typographic scale — harmonic steps using φ as ratio basis */
+  --text-xs:   0.618rem;   /* 9.9px  — labels, captions    */
+  --text-sm:   0.764rem;   /* 12.2px — secondary body      */
+  --text-base: 1rem;       /* 16px   — body copy           */
+  --text-lg:   1.272rem;   /* 20.4px — subtitle            */
+  --text-xl:   2.058rem;   /* 32.9px — heading             */
+  --text-2xl:  3.236rem;   /* 51.8px — name / display      */
+
+  /* Spacing scale (base 1rem × φ) */
+  --space-1: 0.382rem;
+  --space-2: 0.618rem;
+  --space-3: 1rem;
+  --space-4: 1.618rem;
+  --space-5: 2.618rem;
+  --space-6: 4.236rem;
+  --space-7: 6.854rem;
+
+  /* Misc */
+  --line-height-base: 1.618;
+  --line-height-tight: 1.2;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-wide: 0.08em;
+  --border-radius: 2px;
+  --transition-speed: 200ms;
+}
+
+/* System dark (no JS, or before JS runs) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:           #111110;
+    --text:         #e8e6e0;
+    --text-muted:   #8a8882;
+    --wave-color:   rgba(232, 230, 224, 0.12);
+    --border:       rgba(232, 230, 224, 0.12);
+    --link:         #e8e6e0;
+    --link-hover:   #c0bdb6;
+    --focus-ring:   #e8e6e0;
+    --btn-bg:       transparent;
+    --btn-text:     #8a8882;
+    --btn-border:   rgba(232, 230, 224, 0.22);
+    --btn-hover-bg: rgba(232, 230, 224, 0.06);
+  }
+}
+
+/* Explicit dark override (set by JS) */
+:root[data-theme="dark"] {
+  --bg:           #111110;
+  --text:         #e8e6e0;
+  --text-muted:   #8a8882;
+  --wave-color:   rgba(232, 230, 224, 0.12);
+  --border:       rgba(232, 230, 224, 0.12);
+  --link:         #e8e6e0;
+  --link-hover:   #c0bdb6;
+  --focus-ring:   #e8e6e0;
+  --btn-bg:       transparent;
+  --btn-text:     #8a8882;
+  --btn-border:   rgba(232, 230, 224, 0.22);
+  --btn-hover-bg: rgba(232, 230, 224, 0.06);
+}
+
+/* Explicit light override (set by JS — ensures system dark doesn't bleed through) */
+:root[data-theme="light"] {
+  --bg:           #f5f4f0;
+  --text:         #1c1c1a;
+  --text-muted:   #5e5e5a;
+  --wave-color:   rgba(28, 28, 26, 0.14);
+  --border:       rgba(28, 28, 26, 0.14);
+  --link:         #1c1c1a;
+  --link-hover:   #4a4a46;
+  --focus-ring:   #1c1c1a;
+  --btn-bg:       transparent;
+  --btn-text:     #5e5e5a;
+  --btn-border:   rgba(28, 28, 26, 0.22);
+  --btn-hover-bg: rgba(28, 28, 26, 0.06);
+}
