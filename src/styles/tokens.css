@@ -9,7 +9,7 @@
   --bg:           #f5f4f0;
   --text:         #1c1c1a;
   --text-muted:   #5e5e5a;
-  --wave-color:   rgba(28, 28, 26, 0.14); /* adjust independently of --border */
+  --wave-color:   #1c1c1a; /* opacity controlled per-line in JS via globalAlpha */
   --border:       rgba(28, 28, 26, 0.14);
   --link:         #1c1c1a;
   --link-hover:   #4a4a46;
@@ -51,7 +51,7 @@
     --bg:           #111110;
     --text:         #e8e6e0;
     --text-muted:   #8a8882;
-    --wave-color:   rgba(232, 230, 224, 0.12);
+    --wave-color:   #e8e6e0; /* opacity controlled per-line in JS via globalAlpha */
     --border:       rgba(232, 230, 224, 0.12);
     --link:         #e8e6e0;
     --link-hover:   #c0bdb6;
@@ -68,7 +68,7 @@
   --bg:           #111110;
   --text:         #e8e6e0;
   --text-muted:   #8a8882;
-  --wave-color:   rgba(232, 230, 224, 0.12);
+  --wave-color:   #e8e6e0; /* opacity controlled per-line in JS via globalAlpha */
   --border:       rgba(232, 230, 224, 0.12);
   --link:         #e8e6e0;
   --link-hover:   #c0bdb6;
@@ -84,7 +84,7 @@
   --bg:           #f5f4f0;
   --text:         #1c1c1a;
   --text-muted:   #5e5e5a;
-  --wave-color:   rgba(28, 28, 26, 0.14);
+  --wave-color:   #1c1c1a; /* opacity controlled per-line in JS via globalAlpha */
   --border:       rgba(28, 28, 26, 0.14);
   --link:         #1c1c1a;
   --link-hover:   #4a4a46;

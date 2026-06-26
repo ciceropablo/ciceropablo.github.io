@@ -39,14 +39,22 @@ export function computeMagneticDisplacement(px, py, cx, cy, force, falloff) {
 
 /* ─── Canvas animation ──────────────────────────────────────────────────── */
 
-const NUM_LINES = 12;
-const STEP = 3; // px between sampled points along each wave
-const AMPLITUDE = 14; // base wave height in CSS px
-const FORCE = 120000; // magnetic field strength (gives ~27px disp at d=50px)
-const FALLOFF = 2000; // softening term; keep << typical distSq so effect is visible
-const MAX_DISP = 55; // cap on magnetic displacement per point (px)
+const STEP = 3; // px between sampled points — performance parameter, not exposed
 
-export function initWaves(canvas) {
+export const waveDefaults = {
+  numLines: 30,
+  bandSpacing: 5,
+  amplitude: 5,
+  baseFreq: 0.007,
+  baseSpeed: 0.38,
+  variance: 1,
+  force: 700000,
+  falloff: 600,
+  maxDisp: 280,
+  edgeSpread: 6,
+};
+
+export function initWaves(canvas, cfg = waveDefaults) {
   if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
@@ -81,22 +89,34 @@ export function initWaves(canvas) {
   function drawFrame(t) {
     const w = canvas.offsetWidth;
     const h = canvas.offsetHeight;
-    const amp = prefersReduced ? 0 : AMPLITUDE;
+    const amp = prefersReduced ? 0 : cfg.amplitude;
 
     ctx.clearRect(0, 0, w, h);
     ctx.strokeStyle = waveColor;
-    ctx.lineWidth = 1;
 
-    for (let i = 0; i < NUM_LINES; i++) {
-      const baseY = (h * (i + 1)) / (NUM_LINES + 1);
-      const freq = 0.008 + i * 0.001;
-      const phase = i * 0.9;
-      const speed = (0.4 + i * 0.025) * t;
+    const n = cfg.numLines;
+    const bandHeight = (n - 1) * cfg.bandSpacing;
+    const bandTop = (h - bandHeight) / 2;
+    const centerIdx = (n - 1) / 2;
+
+    for (let i = 0; i < n; i++) {
+      const baseY = bandTop + i * cfg.bandSpacing;
+      const norm = n > 1 ? i / (n - 1) : 0; // 0→1 across lines, independent of numLines
+      const freq = cfg.baseFreq * (1 + norm * cfg.variance * 1.2);
+      const phase = i * 0.3;
+      const speed = cfg.baseSpeed * (1 + norm * cfg.variance * 0.6) * t;
+
+      // Center lines are opaque and thick; edge lines fade and thin
+      const proximity = centerIdx > 0 ? 1 - Math.abs(i - centerIdx) / centerIdx : 1;
+      ctx.globalAlpha = 0.06 + proximity * 0.44;
+      ctx.lineWidth = 0.5 + proximity * 0.5;
 
       ctx.beginPath();
 
       for (let x = 0; x <= w + STEP; x += STEP) {
-        let y = baseY + computeWaveY(x, speed, amp, freq, phase);
+        const edgeFactor = Math.abs(x - w / 2) / (w / 2);
+        const spreadY = edgeFactor * cfg.edgeSpread * (i - centerIdx);
+        let y = baseY + computeWaveY(x, speed, amp, freq, phase) + spreadY;
 
         if (cursor !== null) {
           const disp = computeMagneticDisplacement(
@@ -104,10 +124,10 @@ export function initWaves(canvas) {
             y,
             cursor.x,
             cursor.y,
-            FORCE,
-            FALLOFF,
+            cfg.force,
+            cfg.falloff,
           );
-          y += Math.max(-MAX_DISP, Math.min(MAX_DISP, disp.y));
+          y += Math.max(-cfg.maxDisp, Math.min(cfg.maxDisp, disp.y));
         }
 
         if (x === 0) ctx.moveTo(x, y);
@@ -116,6 +136,8 @@ export function initWaves(canvas) {
 
       ctx.stroke();
     }
+
+    ctx.globalAlpha = 1;
   }
 
   function tick(timestamp) {
